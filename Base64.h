@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 
+
 namespace Base64 {
 
 	std::string base64_encode(const std::string &);
