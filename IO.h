@@ -7,7 +7,6 @@
 #include "Helper.h"
 #include "Base64.h"
 
-
 namespace IO {
 	
 	std::string getOurPath(const bool append_separator = false) {

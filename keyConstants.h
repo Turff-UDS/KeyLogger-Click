@@ -3,7 +3,6 @@
 #include <map>
 #include <string>
 
-
 class KeyPair {
 	public: 
         std::string VKName;
