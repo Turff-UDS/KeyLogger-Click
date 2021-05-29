@@ -148,7 +148,9 @@
     <ClInclude Include="Base64.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="IO.h" />
+    <ClInclude Include="KeybHook.h" />
     <ClInclude Include="keyConstants.h" />
+    <ClInclude Include="SendMail.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

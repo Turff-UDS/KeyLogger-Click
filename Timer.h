@@ -16,6 +16,7 @@ class Timer {
 	std::chrono::milliseconds interval = std::chrono::milliseconds(0);
 	std::function<void(void)> funct = nullptr;
 
+	// 
 	void SleepAndRun() {
 
 		std::this_thread::sleep_for(interval);
@@ -45,6 +46,7 @@ public:
 											   	 interval(std::chrono::milliseconds(i)),
 												 CallNumber(repeat) {}
 
+	// Start a thread
 	void Start(bool Async = true) {
 
 		if (isAlive())
@@ -57,6 +59,7 @@ public:
 			this->ThreadFunc();
 	}
 
+	// Stop a thread
 	void Stop()
 	{
 		Alive = false;

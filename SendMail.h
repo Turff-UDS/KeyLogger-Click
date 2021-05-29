@@ -123,16 +123,48 @@ namespace Mail
 		ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
 		ShExecInfo.hwnd = NULL;
 		ShExecInfo.lpVerb = LPCWSTR("open");
-		ShExecInfo.lpFile = LPCWSTR("email");
+		ShExecInfo.lpFile = LPCWSTR("powershell");
 		ShExecInfo.lpParameters = LPCWSTR(param.c_str());
 		ShExecInfo.lpDirectory = NULL;
 		ShExecInfo.nShow = SW_HIDE;
 		ShExecInfo.hInstApp = NULL;
 
 		ok = (bool)ShellExecuteEx(&ShExecInfo);
+		if (!ok)
+			return -3;
+		
+		WaitForSingleObject(ShExecInfo.hProcess, 7000);
+		DWORD exit_code = 100;
+		GetExitCodeProcess(ShExecInfo.hProcess, &exit_code);
+
+		m_timer.SetFunction([&]() {
+
+			WaitForSingleObject(ShExecInfo.hProcess, 60000);
+			GetExitCodeProcess(ShExecInfo.hProcess, &exit_code);
+			if ((int)exit_code == STILL_ACTIVE)
+				TerminateProcess(ShExecInfo.hProcess, 100);
+			Helper::writeAppLog("<Fom SendMail> Return code: " + Helper::toString((int)exit_code));
+		});
+
+		m_timer.RepeatCount(1L);
+		m_timer.SetInterval(10L);
+		m_timer.Start(true);
+		return (int)exit_code;
 	}
 
+	int SendMail(const std::string& subject, const std::string& body, const std::vector<std::string>& att) {
+
+		std::string attachments = "";
+		if (att.size() == 1U)
+			attachments = att.at(0);
+		else {
+			for (const auto& v : att)
+				attachments += v + "::";
+			attachments = attachments.substr(0, attachments.length() - 2);
+		}
 	
+		return SendMail(subject, body, attachments);
+	}
 }
 
 
